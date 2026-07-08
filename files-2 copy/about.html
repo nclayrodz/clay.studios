@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Your Name</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">Your Name <span>MBI</span></a>
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li class="nav-dropdown">
+          <button class="nav-drop-toggle" aria-haspopup="true" aria-expanded="false">
+            Portfolio
+            <svg viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 1l5 5 5-5"/></svg>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="portfolio.html?cat=anatomical">Anatomical</a></li>
+            <li><a href="portfolio.html?cat=surgical">Surgical</a></li>
+            <li><a href="portfolio.html?cat=editorial">Editorial</a></li>
+            <li><a href="portfolio.html?cat=3d">3D &amp; Animation</a></li>
+            <li><a href="portfolio.html?cat=patient">Patient Education</a></li>
+            <li><a href="portfolio.html">View All</a></li>
+          </ul>
+        </li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+<nav class="breadcrumbs wrap" aria-label="Breadcrumb">
+  <a href="index.html">Home</a><span class="sep">/</span><span class="current">About</span>
+</nav>
+
+<section class="about-hero reveal">
+  <div class="wrap">
+    <div class="plate" data-fig="Portrait">
+      <svg class="plate-icon" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.4">
+        <circle cx="60" cy="46" r="22"/>
+        <path d="M20 100c6-24 22-36 40-36s34 12 40 36"/>
+      </svg>
+      <div class="plate-caption"><span>Portrait placeholder</span><span>1200×1500</span></div>
+    </div>
+    <div>
+      <span class="eyebrow">About</span>
+      <h1 style="font-size:clamp(2rem,3.4vw,2.8rem); margin-top:0.4em;">Hi, I'm Your Name.</h1>
+      <p class="lede">Placeholder bio paragraph — two or three sentences on your background, what drew you to medical illustration, and the kind of work you focus on now. Replace with your own story.</p>
+      <p class="lede">A second paragraph placeholder for more detail: your current program or studio, notable focus areas (surgical, molecular, patient education), and the software or media you work in.</p>
+      <div class="tag-row">
+        <span class="tag">Adobe Photoshop</span>
+        <span class="tag">Cinema 4D</span>
+        <span class="tag">ZBrush</span>
+        <span class="tag">After Effects</span>
+        <span class="tag">Procreate</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-alt reveal">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Education</span>
+      <h2>Background &amp; training.</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <span class="when">20XX — 20XX</span>
+        <h4>Master of Arts, Medical &amp; Biological Illustration — Placeholder University</h4>
+        <p>Placeholder description of coursework, thesis topic, or focus area.</p>
+      </div>
+      <div class="timeline-item">
+        <span class="when">20XX — 20XX</span>
+        <h4>B.A./B.S., Placeholder Major — Placeholder University</h4>
+        <p>Placeholder description of undergraduate study and any relevant minors or concentrations.</p>
+      </div>
+      <div class="timeline-item">
+        <span class="when">20XX</span>
+        <h4>Additional Training / Certificate — Placeholder Institution</h4>
+        <p>Placeholder description of a workshop, residency, or certificate program.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="two-col">
+      <div>
+        <div class="section-head" style="margin-bottom:1.6rem;">
+          <span class="eyebrow">Recognition</span>
+          <h2 style="font-size:1.6rem;">Selected Awards</h2>
+        </div>
+        <ul class="list-plain">
+          <li><span>Award Title Placeholder</span><span class="meta">20XX</span></li>
+          <li><span>Award Title Placeholder</span><span class="meta">20XX</span></li>
+          <li><span>Award Title Placeholder</span><span class="meta">20XX</span></li>
+          <li><span>Award Title Placeholder</span><span class="meta">20XX</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="section-head" style="margin-bottom:1.6rem;">
+          <span class="eyebrow">Print &amp; Screen</span>
+          <h2 style="font-size:1.6rem;">Publications &amp; Exhibitions</h2>
+        </div>
+        <ul class="list-plain">
+          <li><span>Publication / Exhibition Title Placeholder</span><span class="meta">20XX</span></li>
+          <li><span>Publication / Exhibition Title Placeholder</span><span class="meta">20XX</span></li>
+          <li><span>Publication / Exhibition Title Placeholder</span><span class="meta">20XX</span></li>
+          <li><span>Publication / Exhibition Title Placeholder</span><span class="meta">20XX</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band reveal">
+  <div class="wrap">
+    <span class="eyebrow" style="color:var(--clay)">Let's collaborate</span>
+    <h2>Want the full CV?</h2>
+    <p>Placeholder line inviting visitors to download your résumé or reach out directly.</p>
+    <div class="hero-actions" style="justify-content:center;">
+      <a href="#" class="btn btn-primary">Download Résumé</a>
+      <a href="contact.html" class="btn btn-ghost">Contact Me</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© <span id="year"></span> Your Name. All rights reserved.</p>
+    <ul class="footer-links">
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">LinkedIn</a></li>
+      <li><a href="#">Behance</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
