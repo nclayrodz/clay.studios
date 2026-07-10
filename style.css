@@ -23,13 +23,18 @@
      --mono:  'JetBrains Mono', ui-monospace, monospace;
    
      --max-w: 1180px;
+     --header-h: 120px;
      --radius: 3px;
    }
    
    *, *::before, *::after{ box-sizing: border-box; }
    
    html{ scroll-behavior: smooth; }
-   
+ 
+    /* Anchor-jump targets (e.g. the hero scroll cue) should land below the
+    sticky header, not have their top edge hidden underneath it. */
+    [id]{ scroll-margin-top: calc(var(--header-h) + 24px); }
+    
    body{
      margin: 0;
      background: var(--bg);
@@ -108,9 +113,9 @@
      position: sticky;
      top: 0;
      z-index: 50;
-     background: rgba(244, 238, 224, 0.92);
-     backdrop-filter: blur(4px);
-     border-bottom: 1px solid var(--line);
+     background: rgba(244, 238, 224, 0.6);
+     backdrop-filter: blur(6px);
+     /*border-bottom: 1px solid var(--line);*/
    }
    
    .site-header .wrap{
@@ -119,7 +124,8 @@
      display: flex;
      align-items: center;
      justify-content: space-between;
-     height: 120px;
+     height: var(--header-h);
+     transition: height 0.2s ease;
    }
    
    .brand{
@@ -128,12 +134,14 @@
      letter-spacing: 0.01em;
    }
    .brand span{ color: var(--rust); font-style: italic; }
-
+   
+   /* If using a logo image instead of text, this scales it with --header-h */
    .brand img{
-    height: 120px;      /* adjust to taste */
-    width: auto;
-    display: block;
-  }
+     height: min(100px, calc(var(--header-h) - 20px));
+     width: auto;
+     display: block;
+     transition: height 0.2s ease;
+   }
    
    .nav-links{
      display: flex;
@@ -220,21 +228,29 @@
    }
    .dropdown-menu a:hover{ background: var(--bg-alt); color: var(--rust); }
    
-   @media (max-width: 780px){
-     .dropdown-menu{
-       position: static;
-       transform: none;
-       opacity: 1;
-       visibility: visible;
-       box-shadow: none;
-       border: none;
-       display: none;
-       padding: 0 0 0 1rem;
-       min-width: 0;
-     }
-     .nav-dropdown.open .dropdown-menu{ display: block; }
-     .nav-drop-toggle{ padding: 1rem 32px; width: 100%; justify-content: space-between; }
-   }
+  @media (max-width: 780px){
+    .dropdown-menu{
+      position: static;
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+      box-shadow: none;
+      border: none;
+      display: none;
+      padding: 0.5rem 0 0.75rem;
+      min-width: 0;
+      text-align: center;
+    }
+    .nav-dropdown.open .dropdown-menu{ display: block; }
+    .dropdown-menu a{ font-size: 1.05rem; padding: 0.6em 0.9em; }
+    .nav-drop-toggle{
+      justify-content: center;
+      width: auto;
+      margin: 0 auto;
+      font-size: inherit;
+    }
+  }
+
    
    .nav-toggle{
      display: none;
@@ -261,24 +277,66 @@
    .nav-toggle span::before{ position: absolute; top: -6px; }
    .nav-toggle span::after{ position: absolute; top: 6px; }
    
-   @media (max-width: 780px){
-     .site-header .wrap{ padding: 0 24px; }
-     .nav-toggle{ display: flex; }
-     .nav-links{
-       position: absolute;
-       top: 78px; left: 0; right: 0;
-       background: var(--bg);
-       flex-direction: column;
-       gap: 0;
-       border-bottom: 1px solid var(--line);
-       max-height: 0;
-       overflow: hidden;
-       transition: max-height 0.25s ease;
-     }
-     .nav-links.open{ max-height: 320px; }
-     .nav-links li{ border-top: 1px solid var(--line); }
-     .nav-links a{ display: block; padding: 1rem 32px; }
+   @media (max-width: 1024px){
+     :root{ --header-h: 100px; }
    }
+   
+  @media (max-width: 780px){
+    .site-header .wrap{ padding: 0 24px; }
+    :root{ --header-h: 84px; }
+    .nav-toggle{ display: flex; position: relative; z-index: 101; }
+
+    /* Full-screen takeover menu on mobile */
+    .nav-links{
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 0.25rem;
+      border-bottom: none;
+      max-height: none;
+      height: 100dvh;
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+      z-index: 90;
+      padding: calc(var(--header-h) + 16px) 24px 40px;
+    }
+    .nav-links.open{
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .nav-links li{
+      border-top: none;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+    }
+    .nav-links a{
+      display: block;
+      padding: 0.9rem 0;
+      font-size: 1.35rem;
+    }
+
+    /* Hamburger animates into an X while the menu is open */
+    .nav-toggle[aria-expanded="true"] span{ background: transparent; }
+    .nav-toggle[aria-expanded="true"] span::before{
+      top: 0;
+      transform: rotate(45deg);
+    }
+    .nav-toggle[aria-expanded="true"] span::after{
+      top: 0;
+      transform: rotate(-45deg);
+    }
+  }
    
    /* ---------------------------------- */
    /* Buttons                            */
@@ -400,6 +458,94 @@
      .hero-full .wrap{ padding: 80px 24px; }
      .hero-full .plate .plate-icon{ right: 4%; width: 60%; opacity: 0.35; }
    }
+   
+   .plate-photo{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+/* ---------------------------------- */
+/* Hero social rail + scroll cue      */
+/* ---------------------------------- */
+ 
+.hero-social{
+    position: absolute;
+    z-index: 3;
+    right: 48px;
+    bottom: 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    color: var(--ink);
+  }
+  .hero-social-icon{
+    width: 22px;
+    height: 22px;
+    color: inherit;
+    filter: drop-shadow(0 1px 3px rgba(20,19,15,0.25));
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
+  .hero-social-icon svg{ width: 100%; height: 100%; }
+  .hero-social-icon:hover{ color: var(--rust); transform: translateY(-2px); }
+   
+  .hero-social-line{
+    width: 1px;
+    height: 64px;
+    background: currentColor;
+    opacity: 0.4;
+  }
+   
+  .hero-scroll-btn{
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    background: rgba(250,249,246,0.35);
+    backdrop-filter: blur(3px);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    animation: hero-scroll-bounce 2.4s ease-in-out infinite;
+  }
+  .hero-scroll-btn svg{ width: 18px; height: 18px; }
+  .hero-scroll-btn:hover{
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+  }
+   
+  @keyframes hero-scroll-bounce{
+    0%, 100%{ transform: translateY(0); }
+    50%{ transform: translateY(6px); }
+  }
+   
+  @media (prefers-reduced-motion: reduce){
+    .hero-scroll-btn{ animation: none; }
+  }
+   
+  @media (max-width: 780px){
+    /* Icons sat too close to the paragraph text at this width — drop them
+       and keep just the scroll cue. */
+    .hero-social-icon,
+    .hero-social-line{ display: none; }
+    .hero-social{ right: 24px; bottom: 44px; gap: 16px; }
+    .hero-scroll-btn{ width: 44px; height: 44px; }
+    .hero-scroll-btn svg{ width: 16px; height: 16px; }
+  }
+   
+  @media (max-width: 780px){
+    .hero-full{ min-height: 560px; }
+    .hero-full .hero-overlay{
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg) 40%, rgba(244,238,224,0.88) 62%, rgba(244,238,224,0.35) 100%);
+    }
+    .hero-full .wrap{ padding: 80px 24px; }
+    .hero-full .plate .plate-icon{ right: 4%; width: 60%; opacity: 0.35; }
+  }
    
    /* ---------------------------------- */
    /* Specimen-plate image placeholder   */
@@ -761,7 +907,7 @@
    
    .logo-strip{
      background: var(--ink);
-     padding: 44px 0;
+     padding: 20px 0;
    }
    .logo-strip .wrap{
      display: flex;
@@ -797,6 +943,18 @@
    }
    .logo-item:hover{ opacity: 1; color: var(--clay); }
    .logo-item svg{ width: 20px; height: 20px; flex-shrink: 0; }
+
+   /* Logo images: fixed height, auto width so mixed aspect ratios still align */
+.logo-item img{
+    height: 100px;
+    width: auto;
+    max-width: 140px;
+    object-fit: contain;
+    filter: grayscale(1) brightness(1.6);
+    opacity: 0.75;
+    transition: filter 0.2s ease, opacity 0.2s ease;
+  }
+  .logo-item:hover img{ filter: none; opacity: 1; }  
    
    .logo-arrow{
      flex-shrink: 0;
@@ -925,12 +1083,28 @@
    }
    .view-btn.active{ background: var(--ink); color: var(--bg); }
    
-   .portfolio-grid.gallery-mode{
-     grid-template-columns: 1fr;
-     max-width: 760px;
-     margin: 0 auto;
-   }
-   .portfolio-grid.gallery-mode .plate{ aspect-ratio: 16/10; }
+  .portfolio-grid.gallery-mode{
+    grid-template-columns: 1fr;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .portfolio-grid.gallery-mode .plate{ aspect-ratio: 16/10; }
+
+  /* Grid and gallery view look the same at this width anyway, and the
+     toggle buttons crowd the filter row — so just hide the toggle and
+     force plain grid layout regardless of which mode was last selected. */
+  @media (max-width: 780px){
+    .view-toggle{ display: none; }
+    .portfolio-grid.gallery-mode{
+      grid-template-columns: repeat(2, 1fr);
+      max-width: none;
+      margin: 0;
+    }
+    .portfolio-grid.gallery-mode .plate{ aspect-ratio: 4/3.2; }
+  }
+  @media (max-width: 600px){
+    .portfolio-grid.gallery-mode{ grid-template-columns: 1fr; }
+  }
    
    .lightbox{
      position: fixed;
