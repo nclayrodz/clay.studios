@@ -7,7 +7,7 @@
 
    :root{
      /* core palette */
-     --bg:        #F4EEE0;   /* warm cream */
+     --bg:        #ffffff;   /* warm cream */
      --bg-alt:    #EAE0C9;   /* deeper cream for alternating sections */
      --ink:       #2B241C;   /* warm near-black */
      --ink-soft:  #6B5E4C;   /* muted brown-grey for secondary text */
@@ -24,7 +24,7 @@
    
      --max-w: 1180px;
      --header-h: 120px;
-     --radius: 3px;
+     --radius: 2px;
    }
    
    *, *::before, *::after{ box-sizing: border-box; }
@@ -113,7 +113,7 @@
      position: sticky;
      top: 0;
      z-index: 50;
-     background: rgba(244, 238, 224, 0.6);
+     background: rgba(255, 254, 254, 0.6);
      backdrop-filter: blur(6px);
      /*border-bottom: 1px solid var(--line);*/
    }
