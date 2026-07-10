@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Your Name</title>
+<link rel="stylesheet" href="style2.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="brand">
+      <img src="images/logo.png" alt="Your Name — Medical & Biological Illustration">
+    </a>
+    <nav>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li class="nav-dropdown">
+          <button class="nav-drop-toggle" aria-haspopup="true" aria-expanded="false">
+            Portfolio
+            <svg viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 1l5 5 5-5"/></svg>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="portfolio.html?cat=anatomical">Anatomical</a></li>
+            <li><a href="portfolio.html?cat=surgical">Surgical</a></li>
+            <li><a href="portfolio.html?cat=editorial">Editorial</a></li>
+            <li><a href="portfolio.html?cat=3d">3D &amp; Animation</a></li>
+            <li><a href="portfolio.html?cat=patient">Patient Education</a></li>
+            <li><a href="portfolio.html">View All</a></li>
+          </ul>
+        </li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+
+<nav class="breadcrumbs wrap" aria-label="Breadcrumb">
+  <a href="index.html">Home</a><span class="sep">/</span><span class="current">Contact</span>
+</nav>
+
+<section class="reveal">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Contact</span>
+      <h1 style="font-size:clamp(2rem,3.4vw,2.6rem); margin-top:0.4em;">Let's work together.</h1>
+      <p>Placeholder intro line — invite editors, clinicians, or studios to reach out about commissions, licensing, or collaborations.</p>
+    </div>
+
+    <div class="contact-wrap">
+      <form id="contactForm">
+        <div class="field">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Jane Doe" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="jane@example.com" required>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Tell me about your project..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+        <p class="form-note">This form doesn't send anywhere yet — GitHub Pages only serves static files. Connect it to a service like Formspree, Getform, or a Google Form action to make it work.</p>
+      </form>
+
+      <div>
+        <dl class="contact-info">
+          <dt>Email</dt>
+          <dd>hello@yourdomain.com</dd>
+          <dt>Location</dt>
+          <dd>City, State — placeholder</dd>
+          <dt>Availability</dt>
+          <dd>Open for freelance &amp; contract work</dd>
+        </dl>
+        <div class="social-row">
+          <a href="#">Instagram</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">Behance</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© <span id="year"></span> Your Name. All rights reserved.</p>
+    <ul class="footer-links">
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">LinkedIn</a></li>
+      <li><a href="#">Behance</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
