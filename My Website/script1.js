@@ -53,7 +53,6 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
     });
   }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
   revealEls.forEach(function (el) { observer.observe(el); });
-})();
 
 // Logo carousel — auto-scrolls, pauses on hover, arrows nudge it manually
 (function () {
@@ -102,6 +101,59 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
   if (nextBtn) nextBtn.addEventListener('click', function () { nudge(220); });
 })();
 
+  // Re-measure once every logo image has actually loaded — image dimensions
+  // aren't known at script-run time, so the initial measurement is often
+  // wrong and would make the loop point jump.
+  var trackImages = track.querySelectorAll('img');
+  var loaded = 0;
+  if (trackImages.length) {
+    trackImages.forEach(function (img) {
+      if (img.complete) {
+        loaded++;
+      } else {
+        img.addEventListener('load', function () {
+          loaded++;
+          if (loaded === trackImages.length) measure();
+        });
+        img.addEventListener('error', function () {
+          loaded++;
+          if (loaded === trackImages.length) measure();
+        });
+      }
+    });
+    if (loaded === trackImages.length) measure();
+  }
+ 
+  function tick() {
+    if (!paused) {
+      offset += speed;
+      if (offset >= half) offset -= half;
+      track.style.transform = 'translateX(' + (-offset) + 'px)';
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+ 
+  viewport.addEventListener('mouseenter', function () { paused = true; });
+  viewport.addEventListener('mouseleave', function () { paused = false; });
+ 
+  var resumeTimer;
+  function nudge(amount) {
+    offset += amount;
+    if (offset < 0) offset += half;
+    if (offset >= half) offset -= half;
+    track.style.transform = 'translateX(' + (-offset) + 'px)';
+    paused = true;
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(function () { paused = false; }, 2200);
+  }
+ 
+  var prevBtn = document.getElementById('logoPrev');
+  var nextBtn = document.getElementById('logoNext');
+  if (prevBtn) prevBtn.addEventListener('click', function () { nudge(-220); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { nudge(220); });
+})();
+ 
 // Portfolio filter + view toggle + lightbox gallery
 (function () {
   var filterBar = document.getElementById('filterBar');
@@ -126,6 +178,8 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
       btn.classList.add('active');
       applyFilter(btn.getAttribute('data-filter'));
     });
+
+
 
     // Pre-filter from ?cat= param (used by the nav dropdown links)
     var params = new URLSearchParams(window.location.search);
@@ -220,3 +274,52 @@ if (contactForm) {
     alert('This form is a placeholder. Connect it to Formspree, Getform, or another form service to receive submissions on GitHub Pages.');
   });
 }
+
+// Eased in-page anchor scrolling (e.g. the hero "scroll to next section" cue).
+// Native `scroll-behavior: smooth` gives no control over speed/easing, so
+// this replaces it with a slower, cubic-eased glide for anchor links.
+(function () {
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ 
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+ 
+  function headerHeight() {
+    var val = getComputedStyle(document.documentElement).getPropertyValue('--header-h');
+    return parseInt(val, 10) || 0;
+  }
+ 
+  function smoothScrollTo(targetY, duration) {
+    var startY = window.pageYOffset;
+    var distance = targetY - startY;
+    var startTime = null;
+ 
+    function step(timestamp) {
+      if (startTime === null) startTime = timestamp;
+      var elapsed = timestamp - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      window.scrollTo(0, startY + distance * easeInOutCubic(progress));
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+ 
+  document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      var id = link.getAttribute('href').slice(1);
+      if (!id) return;
+      var target = document.getElementById(id);
+      if (!target) return;
+ 
+      e.preventDefault();
+      var targetY = target.getBoundingClientRect().top + window.pageYOffset - headerHeight() - 24;
+ 
+      if (reduceMotion) {
+        window.scrollTo(0, targetY);
+      } else {
+        smoothScrollTo(targetY, 900);
+      }
+    });
+  });
+})();

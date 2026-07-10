@@ -43,3 +43,7 @@ color palette and placeholder content and images, ready to publish on GitHub Pag
 ## Fonts
 Uses Google Fonts (Fraunces + Inter + JetBrains Mono), loaded via `@import` in
 `style.css`. No build step or dependencies required.
+
+If you have fewer or more than 6 logos, just add/remove <span class="logo-item"> entries in both the real set and the aria-hidden="true" duplicate set below it — they need to match for the loop to be seamless.
+If your logos have very different aspect ratios and 28px height looks off for some, change .logo-item img{ height: 28px; } in style.css to whatever suits your set.
+SVG logos work with this exact same markup if you'd rather use those instead of PNG.
