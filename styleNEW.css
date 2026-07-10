@@ -7,16 +7,17 @@
 
    :root{
      /* core palette */
-     --bg:        #F4EEE0;   /* warm cream */
-     --bg-alt:    #EAE0C9;   /* deeper cream for alternating sections */
-     --ink:       #2B241C;   /* warm near-black */
-     --ink-soft:  #6B5E4C;   /* muted brown-grey for secondary text */
-     --rust:      #A8462E;   /* burnt sienna — primary accent */
-     --rust-dark: #7C331F;   /* hover / pressed state */
+     --bg:        #ffffff;   /* warm cream */
+     --bg-alt:    #ffffff;   /* deeper cream for alternating sections */
+     --ink:       #000000;   /* warm near-black */
+     --ink-soft:  #1c2051;   /* muted brown-grey for secondary text */
+     --rust:      #3929b3;   /* burnt sienna — primary accent */
+     --rust-dark: #6f51d2;   /* hover / pressed state */
      --olive:     #6E7A4F;   /* secondary accent */
      --clay:      #C99257;   /* tertiary accent, tags, highlights */
-     --line:      #D8C9A8;   /* hairline borders */
+     --line:      #6252aa;   /* hairline borders */
      --plate-bg:  #EFE6D2;   /* placeholder "specimen plate" fill */
+     --serve:     #e8eaffbf;   /* light background for dropdowns, etc. */
    
      --serif: 'Fraunces', Georgia, serif;
      --sans:  'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -113,7 +114,7 @@
      position: sticky;
      top: 0;
      z-index: 50;
-     background: rgba(244, 238, 224, 0.6);
+     background: rgba(239, 238, 255, 0.438);
      backdrop-filter: blur(6px);
      /*border-bottom: 1px solid var(--line);*/
    }
@@ -251,7 +252,6 @@
     }
   }
 
-   
    .nav-toggle{
      display: none;
      background: none;
@@ -351,7 +351,7 @@
      font-size: 0.88rem;
      letter-spacing: 0.02em;
      padding: 0.85em 1.6em;
-     border-radius: var(--radius);
+     border-radius: 40px;
      border: 1px solid transparent;
      cursor: pointer;
      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
@@ -567,7 +567,7 @@
    a .plate, button .plate, .plate-hoverable{ cursor: pointer; }
    .plate:hover{
      transform: translateY(-4px);
-     box-shadow: 0 18px 34px rgba(43,36,28,0.16);
+     box-shadow: 0 18px 34px rgba(40, 9, 125, 0.103);
    }
    .plate:hover .plate-icon{ transform: scale(1.08); }
    .plate .plate-icon{ transition: transform 0.35s ease; }
@@ -612,11 +612,11 @@
      display: grid;
      grid-template-columns: repeat(3, 1fr);
      gap: 1px;
-     background: var(--line);
-     border: 1px solid var(--line);
+     background: var(--serve);
+     border: 0px solid var(--line);
    }
    .capability{
-     background: var(--bg);
+     background: var(--serve);
      padding: 2.2rem 2rem;
    }
    .capability .num{
