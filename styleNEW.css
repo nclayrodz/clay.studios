@@ -17,7 +17,7 @@
      --clay:      #C99257;   /* tertiary accent, tags, highlights */
      --line:      #6252aa;   /* hairline borders */
      --plate-bg:  #EFE6D2;   /* placeholder "specimen plate" fill */
-     --serve:     #e8eaffbf;   /* light background for dropdowns, etc. */
+     --serve:     #f0f1ff;   /* light background for dropdowns, etc. */
    
      --serif: 'Fraunces', Georgia, serif;
      --sans:  'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -114,7 +114,7 @@
      position: sticky;
      top: 0;
      z-index: 50;
-     background: rgba(239, 238, 255, 0.438);
+     background: rgba(247, 243, 255, 0.6);
      backdrop-filter: blur(6px);
      /*border-bottom: 1px solid var(--line);*/
    }
@@ -242,16 +242,24 @@
       min-width: 0;
       text-align: center;
     }
-    .nav-dropdown.open .dropdown-menu{ display: block; }
-    .dropdown-menu a{ font-size: 1.05rem; padding: 0.6em 0.9em; }
+    /* Higher specificity than the desktop centering rule
+       (.nav-dropdown.open .dropdown-menu{ transform: translateX(-50%) ... })
+       so it actually wins once the dropdown opens on mobile — otherwise
+       that leftover transform shifts the whole menu off-screen to the left. */
+    .nav-dropdown.open .dropdown-menu{
+      display: block;
+      transform: none;
+    }
+    .nav-dropdown .dropdown-menu a{ font-size: 1.05rem; padding: 0.6em 0.9em; }
     .nav-drop-toggle{
       justify-content: center;
       width: auto;
       margin: 0 auto;
-      font-size: inherit;
+      font-size: 1.35rem;
     }
   }
 
+   
    .nav-toggle{
      display: none;
      background: none;
@@ -351,7 +359,7 @@
      font-size: 0.88rem;
      letter-spacing: 0.02em;
      padding: 0.85em 1.6em;
-     border-radius: 40px;
+     border-radius: var(--radius);
      border: 1px solid transparent;
      cursor: pointer;
      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
@@ -567,7 +575,7 @@
    a .plate, button .plate, .plate-hoverable{ cursor: pointer; }
    .plate:hover{
      transform: translateY(-4px);
-     box-shadow: 0 18px 34px rgba(40, 9, 125, 0.103);
+     box-shadow: 0 18px 34px rgba(43,36,28,0.16);
    }
    .plate:hover .plate-icon{ transform: scale(1.08); }
    .plate .plate-icon{ transition: transform 0.35s ease; }
@@ -611,8 +619,8 @@
    .capability-grid{
      display: grid;
      grid-template-columns: repeat(3, 1fr);
-     gap: 1px;
-     background: var(--serve);
+     gap: 6px;
+     background: var(--bg);
      border: 0px solid var(--line);
    }
    .capability{
@@ -647,16 +655,59 @@
      gap: 28px;
    }
    .work-card .plate{ aspect-ratio: 4/3; margin-bottom: 0.9rem; }
-   .work-card h3{ font-size: 1.05rem; margin-bottom: 0.2rem; }
-   .work-card p{ color: var(--ink-soft); font-size: 0.86rem; margin: 0; }
-   
-   @media (max-width: 900px){
-     .work-grid{ grid-template-columns: 1fr 1fr; }
-   }
-   @media (max-width: 600px){
-     .work-grid{ grid-template-columns: 1fr; }
-   }
-   
+   /*.work-card h3{ font-size: 1.05rem; margin-bottom: 0.2rem; }
+   .work-card p{ color: var(--ink-soft); font-size: 0.86rem; margin: 0; }*/
+
+/*HEREEEEEEEEEEEEE
+      /* Title + caption live inside the plate, hidden until hover */
+      .work-card-overlay{
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 20px;
+        background: linear-gradient(to top, rgba(20,19,15,0.82) 0%, rgba(20,19,15,0.35) 45%, transparent 75%);
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        pointer-events: none;
+      }
+      .work-card:hover .work-card-overlay,
+      .work-card:focus-visible .work-card-overlay{
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .work-card-overlay h3{
+        color: #fff;
+        font-size: 1.05rem;
+        margin: 0 0 0.25rem;
+      }
+      .work-card-overlay p{
+        color: rgba(255,255,255,0.85);
+        font-size: 0.84rem;
+        margin: 0;
+      }
+    
+      @media (max-width: 900px){
+        .work-grid{ grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 600px){
+        .work-grid{ grid-template-columns: 1fr; }
+      }
+
+    /* No real hover on touch devices — keep the caption visible so the
+      context isn't hidden behind an interaction that doesn't exist */
+      @media (max-width: 780px){
+        .work-card-overlay{
+          opacity: 1;
+          transform: none;
+          background: linear-gradient(to top, rgba(20,19,15,0.78) 0%, transparent 65%);
+        }
+      }
+      
+    
    /* CTA band */
    .cta-band{
      background: var(--ink);
