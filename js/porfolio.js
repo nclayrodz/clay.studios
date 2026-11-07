@@ -53,6 +53,7 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
     });
   }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
   revealEls.forEach(function (el) { observer.observe(el); });
+})();
 
 // Logo carousel — auto-scrolls, pauses on hover, arrows nudge it manually
 (function () {
@@ -70,36 +71,6 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
   }
   measure();
   window.addEventListener('resize', measure);
-
-  function tick() {
-    if (!paused) {
-      offset += speed;
-      if (offset >= half) offset -= half;
-      track.style.transform = 'translateX(' + (-offset) + 'px)';
-    }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-
-  viewport.addEventListener('mouseenter', function () { paused = true; });
-  viewport.addEventListener('mouseleave', function () { paused = false; });
-
-  var resumeTimer;
-  function nudge(amount) {
-    offset += amount;
-    if (offset < 0) offset += half;
-    if (offset >= half) offset -= half;
-    track.style.transform = 'translateX(' + (-offset) + 'px)';
-    paused = true;
-    clearTimeout(resumeTimer);
-    resumeTimer = setTimeout(function () { paused = false; }, 2200);
-  }
-
-  var prevBtn = document.getElementById('logoPrev');
-  var nextBtn = document.getElementById('logoNext');
-  if (prevBtn) prevBtn.addEventListener('click', function () { nudge(-220); });
-  if (nextBtn) nextBtn.addEventListener('click', function () { nudge(220); });
-})();
 
   // Re-measure once every logo image has actually loaded — image dimensions
   // aren't known at script-run time, so the initial measurement is often
@@ -123,7 +94,7 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
     });
     if (loaded === trackImages.length) measure();
   }
- 
+
   function tick() {
     if (!paused) {
       offset += speed;
@@ -133,10 +104,10 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
- 
+
   viewport.addEventListener('mouseenter', function () { paused = true; });
   viewport.addEventListener('mouseleave', function () { paused = false; });
- 
+
   var resumeTimer;
   function nudge(amount) {
     offset += amount;
@@ -147,13 +118,13 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
     clearTimeout(resumeTimer);
     resumeTimer = setTimeout(function () { paused = false; }, 2200);
   }
- 
+
   var prevBtn = document.getElementById('logoPrev');
   var nextBtn = document.getElementById('logoNext');
   if (prevBtn) prevBtn.addEventListener('click', function () { nudge(-220); });
   if (nextBtn) nextBtn.addEventListener('click', function () { nudge(220); });
 })();
- 
+
 // Portfolio filter + view toggle + lightbox gallery
 (function () {
   var filterBar = document.getElementById('filterBar');
@@ -162,11 +133,128 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
 
   var items = Array.prototype.slice.call(grid.querySelectorAll('.portfolio-item'));
 
+  // ---------------------------------------------------------------
+  // True justified gallery layout (Flickr/Google-Photos style):
+  // measure every real photo's natural aspect ratio, group items into
+  // rows, and compute the exact height each row needs so its items'
+  // combined width fills the container edge-to-edge with no cropping
+  // and no stretching beyond each image's real proportions.
+  // ---------------------------------------------------------------
+  var TARGET_ROW_HEIGHT = 360;
+  var GAP = 10;
+
+  function getRatio(item) {
+    var img = item.querySelector('.plate-photo');
+    if (img && img.naturalWidth && img.naturalHeight) {
+      return img.naturalWidth / img.naturalHeight;
+    }
+    // Placeholder without a real photo yet — fall back to the inline
+    // --ratio guess if present, otherwise a reasonable default.
+    var styleAttr = item.getAttribute('style') || '';
+    var match = styleAttr.match(/--ratio:\s*([\d.]+)\s*\/\s*([\d.]+)/);
+    return match ? (parseFloat(match[1]) / parseFloat(match[2])) : (4 / 3);
+  }
+
+  function layoutJustified() {
+    if (grid.classList.contains('gallery-mode')) {
+      // Gallery (single large stacked) mode — CSS handles sizing,
+      // clear any pixel sizes JS set earlier so they don't conflict.
+      items.forEach(function (item) {
+        item.style.width = '';
+        item.style.height = '';
+      });
+      return;
+    }
+
+    var visible = items.filter(function (item) { return !item.classList.contains('hidden'); });
+    if (!visible.length) return;
+
+    var containerWidth = grid.clientWidth;
+    var row = [];
+    var rowRatioSum = 0;
+
+    function flushRow(isLastRow) {
+      if (!row.length) return;
+      var gapsTotal = GAP * (row.length - 1);
+      var availableWidth = containerWidth - gapsTotal;
+      var naturalRowWidth = rowRatioSum * TARGET_ROW_HEIGHT;
+
+      var rowHeight;
+      if (isLastRow && naturalRowWidth < availableWidth) {
+        // Last row doesn't have enough items to fill the width —
+        // leave it at the target height rather than stretching a
+        // couple of images to fill the whole row.
+        rowHeight = TARGET_ROW_HEIGHT;
+      } else {
+        rowHeight = availableWidth / rowRatioSum;
+      }
+
+      row.forEach(function (entry) {
+        entry.el.style.height = rowHeight + 'px';
+        entry.el.style.width = (entry.ratio * rowHeight) + 'px';
+      });
+
+      row = [];
+      rowRatioSum = 0;
+    }
+
+    visible.forEach(function (item) {
+      var ratio = getRatio(item);
+      row.push({ el: item, ratio: ratio });
+      rowRatioSum += ratio;
+
+      var gapsTotal = GAP * (row.length - 1);
+      var projectedWidth = rowRatioSum * TARGET_ROW_HEIGHT + gapsTotal;
+      if (projectedWidth >= containerWidth) {
+        flushRow(false);
+      }
+    });
+    flushRow(true);
+
+    // Hidden items keep no inline size so they don't affect future layouts
+    items.forEach(function (item) {
+      if (item.classList.contains('hidden')) {
+        item.style.width = '';
+        item.style.height = '';
+      }
+    });
+  }
+
+  // Run layout once every real photo has loaded (so natural dimensions
+  // are available), then whenever the window resizes.
+  (function waitForImagesThenLayout() {
+    var photos = grid.querySelectorAll('.plate-photo');
+    var pending = photos.length;
+    if (!pending) { layoutJustified(); return; }
+    photos.forEach(function (img) {
+      if (img.complete) {
+        pending--;
+      } else {
+        img.addEventListener('load', function () {
+          pending--;
+          if (pending <= 0) layoutJustified();
+        });
+        img.addEventListener('error', function () {
+          pending--;
+          if (pending <= 0) layoutJustified();
+        });
+      }
+    });
+    if (pending <= 0) layoutJustified();
+  })();
+
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(layoutJustified, 150);
+  });
+
   function applyFilter(filter) {
     items.forEach(function (item) {
       var match = filter === 'all' || item.getAttribute('data-category') === filter;
       item.classList.toggle('hidden', !match);
     });
+    layoutJustified();
   }
 
   if (filterBar) {
@@ -178,8 +266,6 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
       btn.classList.add('active');
       applyFilter(btn.getAttribute('data-filter'));
     });
-
-
 
     // Pre-filter from ?cat= param (used by the nav dropdown links)
     var params = new URLSearchParams(window.location.search);
@@ -202,11 +288,13 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
       grid.classList.remove('gallery-mode');
       gridBtn.classList.add('active');
       galleryBtn.classList.remove('active');
+      layoutJustified();
     });
     galleryBtn.addEventListener('click', function () {
       grid.classList.add('gallery-mode');
       galleryBtn.classList.add('active');
       gridBtn.classList.remove('active');
+      layoutJustified();
     });
   }
 
@@ -227,12 +315,23 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
     if (!visible.length) return;
     currentIndex = (index + visible.length) % visible.length;
     var item = visible[currentIndex];
-    var fig = item.querySelector('.plate').getAttribute('data-fig');
-    var iconMarkup = item.querySelector('.plate-icon').outerHTML;
+    var itemPlate = item.querySelector('.plate');
+    var fig = itemPlate.getAttribute('data-fig');
     var title = item.querySelector('h3').textContent;
+
+    // Use the real photo if one's been uploaded into this grid item;
+    // otherwise fall back to the placeholder icon so unfinished items
+    // still open something in the lightbox.
+    var realImg = itemPlate.querySelector('img');
+    if (realImg) {
+      lbPlate.innerHTML = '<img class="plate-photo" src="' + realImg.getAttribute('src') + '" alt="' + (realImg.getAttribute('alt') || title).replace(/"/g, '&quot;') + '">';
+    } else {
+      lbPlate.innerHTML = itemPlate.querySelector('.plate-icon').outerHTML;
+    }
+
     lbPlate.setAttribute('data-fig', fig);
-    lbPlate.innerHTML = iconMarkup;
     lbTitle.textContent = title;
+    lbTitle.href = item.getAttribute('href') || 'project-detail.html';
     lbCount.textContent = (currentIndex + 1) + ' / ' + visible.length;
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -246,7 +345,10 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
   items.forEach(function (item) {
     var plate = item.querySelector('.plate');
     plate.classList.add('plate-hoverable');
-    plate.addEventListener('click', function () {
+    plate.addEventListener('click', function (e) {
+      // portfolio-item is now the whole card as an <a>, so stop it from
+      // navigating away — clicking a thumbnail should open the lightbox.
+      e.preventDefault();
       var visible = visibleItems();
       openLightbox(visible.indexOf(item));
     });
@@ -266,13 +368,56 @@ document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
   });
 })();
 
-// Contact form (static placeholder — no backend on GitHub Pages)
+
+// Contact form — submits to Formspree via fetch so visitors stay on the
+// page and see an inline status message instead of being redirected away.
 var contactForm = document.getElementById('contactForm');
 if (contactForm) {
-  contactForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    alert('This form is a placeholder. Connect it to Formspree, Getform, or another form service to receive submissions on GitHub Pages.');
-  });
+var formStatus = document.getElementById('formStatus');
+var submitBtn = contactForm.querySelector('button[type="submit"]');
+
+contactForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+  if (formStatus) {
+    formStatus.textContent = '';
+    formStatus.classList.remove('form-status-error', 'form-status-success');
+  }
+
+  fetch(contactForm.action, {
+    method: 'POST',
+    body: new FormData(contactForm),
+    headers: { 'Accept': 'application/json' }
+  })
+    .then(function (response) {
+      if (response.ok) {
+        contactForm.reset();
+        if (formStatus) {
+          formStatus.textContent = "Thanks — your message is on its way. I'll get back to you soon.";
+          formStatus.classList.add('form-status-success');
+        }
+      } else {
+        return response.json().then(function (data) {
+          var message = (data && data.errors && data.errors.length)
+            ? data.errors.map(function (err) { return err.message; }).join(', ')
+            : 'Something went wrong sending that — please try again or email me directly.';
+          throw new Error(message);
+        });
+      }
+    })
+    .catch(function (err) {
+      if (formStatus) {
+        formStatus.textContent = err.message || 'Something went wrong sending that — please try again or email me directly.';
+        formStatus.classList.add('form-status-error');
+      }
+    })
+    .finally(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Message';
+    });
+});
 }
 
 // Eased in-page anchor scrolling (e.g. the hero "scroll to next section" cue).
@@ -280,21 +425,21 @@ if (contactForm) {
 // this replaces it with a slower, cubic-eased glide for anchor links.
 (function () {
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- 
+
   function easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
- 
+
   function headerHeight() {
     var val = getComputedStyle(document.documentElement).getPropertyValue('--header-h');
     return parseInt(val, 10) || 0;
   }
- 
+
   function smoothScrollTo(targetY, duration) {
     var startY = window.pageYOffset;
     var distance = targetY - startY;
     var startTime = null;
- 
+
     function step(timestamp) {
       if (startTime === null) startTime = timestamp;
       var elapsed = timestamp - startTime;
@@ -304,17 +449,28 @@ if (contactForm) {
     }
     requestAnimationFrame(step);
   }
- 
+
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {
     link.addEventListener('click', function (e) {
       var id = link.getAttribute('href').slice(1);
       if (!id) return;
       var target = document.getElementById(id);
       if (!target) return;
- 
+
       e.preventDefault();
-      var targetY = target.getBoundingClientRect().top + window.pageYOffset - headerHeight() - 24;
- 
+
+      // Default: align the target's TOP edge below the sticky header.
+      // Add data-scroll-align="bottom" on a link to instead align the
+      // target's BOTTOM edge with the bottom of the viewport.
+      var align = link.getAttribute('data-scroll-align') || 'top';
+      var rect = target.getBoundingClientRect();
+      var targetY;
+      if (align === 'bottom') {
+        targetY = rect.bottom + window.pageYOffset - window.innerHeight;
+      } else {
+        targetY = rect.top + window.pageYOffset - headerHeight() - 24;
+      }
+
       if (reduceMotion) {
         window.scrollTo(0, targetY);
       } else {

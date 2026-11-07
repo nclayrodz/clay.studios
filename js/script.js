@@ -235,15 +235,58 @@ document.querySelectorAll('#year').forEach(function (el) {
     });
   })();
   
-  // Contact form (static placeholder — no backend on GitHub Pages)
-  var contactForm = document.getElementById('contactForm');
-  if (contactForm) {
-    contactForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      alert('This form is a placeholder. Connect it to Formspree, Getform, or another form service to receive submissions on GitHub Pages.');
-    });
-  }
-  
+
+// Contact form — submits to Formspree via fetch so visitors stay on the
+// page and see an inline status message instead of being redirected away.
+var contactForm = document.getElementById('contactForm');
+if (contactForm) {
+  var formStatus = document.getElementById('formStatus');
+  var submitBtn = contactForm.querySelector('button[type="submit"]');
+ 
+  contactForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+ 
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+    if (formStatus) {
+      formStatus.textContent = '';
+      formStatus.classList.remove('form-status-error', 'form-status-success');
+    }
+ 
+    fetch(contactForm.action, {
+      method: 'POST',
+      body: new FormData(contactForm),
+      headers: { 'Accept': 'application/json' }
+    })
+      .then(function (response) {
+        if (response.ok) {
+          contactForm.reset();
+          if (formStatus) {
+            formStatus.textContent = "Thanks — your message is on its way. I'll get back to you soon.";
+            formStatus.classList.add('form-status-success');
+          }
+        } else {
+          return response.json().then(function (data) {
+            var message = (data && data.errors && data.errors.length)
+              ? data.errors.map(function (err) { return err.message; }).join(', ')
+              : 'Something went wrong sending that — please try again or email me directly.';
+            throw new Error(message);
+          });
+        }
+      })
+      .catch(function (err) {
+        if (formStatus) {
+          formStatus.textContent = err.message || 'Something went wrong sending that — please try again or email me directly.';
+          formStatus.classList.add('form-status-error');
+        }
+      })
+      .finally(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Message';
+      });
+  });
+}
+ 
   // Eased in-page anchor scrolling (e.g. the hero "scroll to next section" cue).
   // Native `scroll-behavior: smooth` gives no control over speed/easing, so
   // this replaces it with a slower, cubic-eased glide for anchor links.
@@ -282,7 +325,6 @@ document.querySelectorAll('#year').forEach(function (el) {
         if (!target) return;
   
         e.preventDefault();
-  
         // Default: align the target's TOP edge below the sticky header.
         // Add data-scroll-align="bottom" on a link to instead align the
         // target's BOTTOM edge with the bottom of the viewport.

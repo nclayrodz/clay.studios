@@ -4,34 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portfolio — Your Name</title>
-<link rel="stylesheet" href="styleNEW.css">
+<link rel="stylesheet" href="../styles/styleNEW.css">
 </head>
 <body>
 
 <header class="site-header">
   <div class="wrap">
-    <a href="index.html" class="brand">
-      <img src="images/logo.png" alt="Your Name — Medical & Biological Illustration">
+    <a href="../index.html" class="brand">
+      <img src="../images/Clayvisuals_logo_color.png" alt="Naomi Clay — Medical & Biological Illustration" class="brand-default">
     </a>
     <nav>
       <ul class="nav-links" id="navLinks">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../pages/about.html">About</a></li>
         <li class="nav-dropdown">
           <button class="nav-drop-toggle" aria-haspopup="true" aria-expanded="false">
-            Portfolio
+            <li><a href="../pages/portfolio.html">Portfolio</a></li>
             <svg viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 1l5 5 5-5"/></svg>
           </button>
           <ul class="dropdown-menu">
-            <li><a href="portfolio.html?cat=anatomical">Anatomical</a></li>
-            <li><a href="portfolio.html?cat=surgical">Surgical</a></li>
-            <li><a href="portfolio.html?cat=editorial">Editorial</a></li>
-            <li><a href="portfolio.html?cat=3d">3D &amp; Animation</a></li>
-            <li><a href="portfolio.html?cat=patient">Patient Education</a></li>
-            <li><a href="portfolio.html">View All</a></li>
+            <li><a href="../pages/portfolio.html?cat=anatomical">Anatomical &amp; Surgical</a></li>
+            <li><a href="../pages/portfolio.html?cat=editorial">Editorial &amp; Graphic Design</a></li>
+            <li><a href="../pages/portfolio.html?cat=3d2d">3D &amp; Animation</a></li>
+            <li><a href="../pages/portfolio.html?cat=patient">Patient Education</a></li>
+            <li><a href="../pages/portfolio.html?cat=science">Science Illustration</a></li>
+            <li><a href="../pages/portfolio.html">View All</a></li>
           </ul>
         </li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="../pages/contact.html">Contact</a></li>
       </ul>
     </nav>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span></button>
@@ -39,25 +39,25 @@
 </header>
 
 <nav class="breadcrumbs wrap" aria-label="Breadcrumb">
-  <a href="index.html">Home</a><span class="sep">/</span><span class="current">Portfolio</span>
+  <a href="../index.html">Home</a><span class="sep">/</span><span class="current">Portfolio</span>
 </nav>
 
 <section style="padding-bottom:0;" class="reveal">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Portfolio</span>
-      <h1 style="font-size:clamp(2rem,3.4vw,2.6rem); margin-top:0.4em;">Selected Plates</h1>
-      <p>Filter by category to browse, or switch to gallery view to click through pieces one at a time. Replace each placeholder plate with your own artwork and swap the captions for real project details.</p>
+      <h1 style="font-size:clamp(2rem,3.4vw,2.6rem); margin-top:0.4em;">Selected Work</h1>
+      <p>Filter by category to browse, or switch to gallery view to click through pieces one at a time.</p>
     </div>
 
     <div class="filter-bar-row">
       <div class="filter-bar" id="filterBar">
         <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="anatomical">Anatomical</button>
-        <button class="filter-btn" data-filter="surgical">Surgical</button>
-        <button class="filter-btn" data-filter="editorial">Editorial</button>
-        <button class="filter-btn" data-filter="3d">3D &amp; Animation</button>
+        <button class="filter-btn" data-filter="anatomical">Anatomical &amp; Surgical</button>
+        <button class="filter-btn" data-filter="editorial">Editorial &amp; Graphic Design</button>
+        <button class="filter-btn" data-filter="3d2d">3D &amp; Animation</button>
         <button class="filter-btn" data-filter="patient">Patient Education</button>
+        <button class="filter-btn" data-filter="science">Science Illustration</button>
       </div>
       <div class="view-toggle">
         <button class="view-btn active" id="viewGridBtn">Grid</button>
@@ -73,22 +73,20 @@
 
       <div class="portfolio-item" data-category="anatomical">
         <div class="plate" data-fig="Fig. 01">
-          <svg class="plate-icon" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.4">
-            <ellipse cx="60" cy="60" rx="40" ry="26"/><circle cx="60" cy="60" r="8"/>
-          </svg>
+          <img src="../images/portfolio/molvis.png" alt="Vine of the Soul project hero image">
         </div>
-        <h3><a href="project-detail.html">Project Title Placeholder</a></h3>
-        <div class="meta-line"><span>Anatomical</span><span>20XX</span></div>
+        <h3><a href="project-detail.html">Vine of the Soul</a></h3>
+        <div class="meta-line"><span>Anatomical</span><span>2025</span></div>
       </div>
 
-      <div class="portfolio-item" data-category="surgical">
+      <div class="portfolio-item" data-category="anatomical">
         <div class="plate" data-fig="Fig. 02">
           <svg class="plate-icon" viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.4">
             <path d="M30 90c0-30 15-60 30-60s30 30 30 60"/>
           </svg>
         </div>
-        <h3><a href="project-detail.html">Project Title Placeholder</a></h3>
-        <div class="meta-line"><span>Surgical</span><span>20XX</span></div>
+        <h3><a href="project-detail.html">Kidney</a></h3>
+        <div class="meta-line"><span>Surgical</span><span>2023</span></div>
       </div>
 
       <div class="portfolio-item" data-category="3d">
@@ -196,6 +194,6 @@
   </div>
 </footer>
 
-<script src="script.js"></script>
+<script src="../js/newscript.js"></script>
 </body>
 </html>

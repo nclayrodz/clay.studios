@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>brb...undergoing some changes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fcfcfc;
+    --ink: #161616;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #fcfcfc; --ink: #161616; }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: env(safe-area-inset-top, 0px) 24px env(safe-area-inset-bottom, 0px);
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    max-width: 640px;
+  }
+  img {
+    width: min(100%, 420px, 52vh);
+    height: auto;
+    aspect-ratio: 1 / 1;
+    display: block;
+  }
+  h1 {
+    margin-top: clamp(0px, 1vh, 8px);
+    font-family: "Newsreader", "Source Serif 4", Georgia, "Times New Roman", serif;
+    font-weight: 500;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .btn {
+  display: inline-block;
+  margin-top: clamp(20px, 4vh, 36px);
+  padding: 1.1em 2.6em;
+  border: 2px solid #161616;
+  border-radius: 999px;
+  background: #161616;
+  color: #fff;
+  font-family: "Jost", "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(0.85rem, 3.5vw, 1.05rem);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  background: transparent;
+  color: #161616;
+}
+
+.btn:focus-visible {
+  outline-offset: 4px;
+}
+</style>
+</head>
+<body>
+  <main>
+    <img src="../images/visuals.gif" alt="" width="800" height="800">
+   
+    <div style="margin-top: 20px;">
+    <h1>brb...undergoing some changes</h1>
+  </div>
+    <a href="../index.html" class="btn">take me back</a>
+  </main>
+</body>
+</html>

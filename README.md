@@ -1,3 +1,13 @@
+## Copyright
+
+© 2026 Naomi Clay. All rights reserved.
+
+All images, photographs, and written content on this site are my original work
+and may not be copied, reproduced, redistributed, or used for AI/ML training
+without written permission.
+
+For licensing or usage requests, contact: n.clay.visuals@gmail.com
+
 # Medical Illustration Portfolio — Template
 
 A static 4-page portfolio site (Home, About, Portfolio, Contact) with a warm/earthy
@@ -51,3 +61,53 @@ SVG logos work with this exact same markup if you'd rather use those instead of 
 =======
 SVG logos work with this exact same markup if you'd rather use those instead of PNG.
 >>>>>>> eb4e2eda1703248d527f1d52ddb30e29f2d46d1f
+
+# Image dimensions
+Export at 2x the size it'll actually display so it looks sharp on retina screens, then compress. Here's what maps to each spot in your current CSS:
+
+# Where	Aspect ratio	Recommended export size
+
+Hero background (full-bleed)	flexible, fills section	2400×1350px or wider (min 1920px wide)
+
+Homepage "Selected Work" cards	4:3	1600×1200px
+
+Portfolio grid plates	~4:3.2	1500×1200px
+
+Project-detail hero image	16:9	2400×1350px
+
+Project-detail gallery images	4:3	1600×1200px
+
+About page portrait	3:4	1200×1600px
+
+Header logo	—	~500px wide, transparent PNG
+
+Logo carousel (client logos)	—	~400×150px, transparent PNG
+
+# A few practical notes:
+JPG for photos/illustrations (quality ~80 is the sweet spot — smaller file, barely visible difference), PNG only when you need transparency (logos, line art).
+Compress before uploading — run everything through Squoosh or TinyPNG first. Aim for under ~300–400KB per image; a portfolio site with a dozen uncompressed 5MB photos will load noticeably slow, especially on mobile.
+Your CSS already uses object-fit: cover wherever you swap in real <img> tags, so images don't need to be exactly that ratio — just close, so nothing gets awkwardly cropped.
+
+# Video
+Two real options for a static GitHub Pages site:
+Option A — Embed from YouTube/Vimeo (recommended)
+Upload the video there (can be set to "unlisted" so it's not publicly searchable, only accessible via your site), then embed:
+html
+<div class="plate" style="aspect-ratio:16/9;">
+  <iframe
+    src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+    style="width:100%; height:100%; border:0;"
+    allow="accelerated-video; encrypted-media; picture-in-picture"
+    allowfullscreen>
+  </iframe>
+</div>
+Why this is the better default: GitHub Pages has bandwidth/storage limits, self-hosted video eats through them fast, and YouTube/Vimeo handle compression, adaptive quality (so mobile doesn't download full-res unnecessarily), and a scrubber/controls for free.
+Option B — Self-hosted <video> tag
+Only reasonable for short, small clips (a few MB, not full reels):
+html
+<div class="plate" style="aspect-ratio:16/9;">
+  <video controls style="width:100%; height:100%; object-fit:cover;">
+    <source src="images/videos/my-clip.mp4" type="video/mp4">
+  </video>
+</div>
+Keep it under ~20–30MB, 1080p or lower, H.264-encoded MP4 — GitHub also hard-blocks any single file over 100MB.
